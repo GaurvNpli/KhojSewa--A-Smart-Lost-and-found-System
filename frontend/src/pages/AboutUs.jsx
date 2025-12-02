@@ -8,13 +8,13 @@ export default function AboutUs() {
       <Navbar />
 
       {/* Hero Section */}
-      <section className="bg-gradient-to-r from-purple-600 to-purple-800 text-white py-16 px-4 sm:px-10">
+      <section className="bg-gradient-to-r from-purple-650 to-purple-800 text-white py-16 px-4 sm:px-10">
         <div className="max-w-5xl mx-auto text-center">
           <h1 className="text-4xl sm:text-5xl font-extrabold mb-4">
             About KhojSewa
           </h1>
           <p className="text-lg sm:text-xl max-w-3xl mx-auto leading-relaxed">
-            KhojSewa is a smart and community-driven platform built to help people in Nepal report and recover lost and found items with ease. Whether you've lost your wallet, phone, or any important belongings — KhojSewa is here to connect you with the right people, instantly and securely.
+            KhojSewa is a smart and community-driven platform built to help people report and recover lost and found items with ease. Whether you've lost your wallet, phone, or any important belongings — KhojSewa is here to connect you with the right people, instantly and securely.
           </p>
         </div>
       </section>
