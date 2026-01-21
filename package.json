@@ -1,0 +1,20 @@
+{
+  "name": "khojsewa",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/GaurvNpli/KhojSewa--A-Smart-Lost-and-found-System.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/GaurvNpli/KhojSewa--A-Smart-Lost-and-found-System/issues"
+  },
+  "homepage": "https://github.com/GaurvNpli/KhojSewa--A-Smart-Lost-and-found-System#readme",
+  "description": ""
+}

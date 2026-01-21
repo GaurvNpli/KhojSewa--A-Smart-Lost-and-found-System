@@ -6,9 +6,6 @@ import Footer from "../components/Footer";
 import HeroSection from "../components/HeroSection";
 import Navbar from "../components/Navbar";
 
-
-
-
 const Home = () => {
   const sectionsRef = useRef([]);
 
@@ -17,14 +14,14 @@ const Home = () => {
       (entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
-            entry.target.classList.add("opacity-100", "translate-y-0");
-            entry.target.classList.remove("opacity-0", "translate-y-10");
+            entry.target.classList.add("visible");
+            entry.target.classList.remove("opacity-0", "translate-y-16");
           }
         });
       },
       {
         threshold: 0.1,
-        rootMargin: "0px 0px -100px 0px",
+        rootMargin: "0px 0px -50px 0px",
       }
     );
 
@@ -40,27 +37,34 @@ const Home = () => {
   }, []);
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen bg-[#FFFDF8]">
       <Navbar />
       <HeroSection />
+
+      {/* Features Section */}
       <div
         ref={(el) => (sectionsRef.current[0] = el)}
-        className="opacity-0 translate-y-10 transition-all duration-700 ease-out"
+        className="opacity-0 translate-y-16 transition-all duration-1000 ease-out"
       >
         <Features />
       </div>
+
+      {/* About Preview Section */}
       <div
         ref={(el) => (sectionsRef.current[1] = el)}
-        className="opacity-0 translate-y-10 transition-all duration-700 ease-out"
+        className="opacity-0 translate-y-16 transition-all duration-1000 ease-out delay-100"
       >
         <AboutPreview />
       </div>
+
+      {/* CTA Section */}
       <div
         ref={(el) => (sectionsRef.current[2] = el)}
-        className="opacity-0 translate-y-10 transition-all duration-700 ease-out"
+        className="opacity-0 translate-y-16 transition-all duration-1000 ease-out delay-200"
       >
         <CTASection />
       </div>
+
       <Footer />
     </div>
   );

@@ -1,253 +1,175 @@
+import { useEffect, useRef } from 'react';
+
 const HeroSection = () => {
+  const heroRef = useRef(null);
+
+  useEffect(() => {
+    // Add subtle parallax effect on mouse move
+    const handleMouseMove = (e) => {
+      if (!heroRef.current) return;
+      const { clientX, clientY } = e;
+      const { innerWidth, innerHeight } = window;
+      const x = (clientX / innerWidth - 0.5) * 20;
+      const y = (clientY / innerHeight - 0.5) * 20;
+
+      const orbs = heroRef.current.querySelectorAll('.floating-orb');
+      orbs.forEach((orb, index) => {
+        const factor = (index + 1) * 0.5;
+        orb.style.transform = `translate(${x * factor}px, ${y * factor}px)`;
+      });
+    };
+
+    window.addEventListener('mousemove', handleMouseMove);
+    return () => window.removeEventListener('mousemove', handleMouseMove);
+  }, []);
+
   return (
-    <section className="relative bg-gradient-to-br from-indigo-900 via-purple-900 to-purple-950 text-white h-screen flex items-center justify-center px-4 sm:px-6 overflow-hidden">
-      {/* Enhanced Gradient Background with Parallax Layers */}
-      <div className="absolute inset-0 bg-gradient-to-br from-indigo-900 via-purple-900 to-purple-950"></div>
-      
-      {/* Animated Grid Background */}
-      <div className="absolute inset-0 opacity-10">
-        <div className="absolute inset-0" style={{
-          backgroundImage: `linear-gradient(to right, rgba(255,255,255,0.1) 1px, transparent 1px),
-                            linear-gradient(to bottom, rgba(255,255,255,0.1) 1px, transparent 1px)`,
-          backgroundSize: '50px 50px',
-          animation: 'gridMove 20s linear infinite'
-        }}></div>
+    <section
+      ref={heroRef}
+      className="relative min-h-screen flex items-center justify-center px-4 sm:px-6 overflow-hidden"
+      style={{
+        background: 'linear-gradient(180deg, #FFFDF8 0%, #FFF9ED 50%, #FFF3DC 100%)'
+      }}
+    >
+      {/* Subtle Grid Pattern */}
+      <div className="absolute inset-0 opacity-30">
+        <div
+          className="absolute inset-0"
+          style={{
+            backgroundImage: `radial-gradient(circle at 1px 1px, rgba(212, 163, 115, 0.15) 1px, transparent 0)`,
+            backgroundSize: '40px 40px',
+          }}
+        />
       </div>
 
-      {/* Premium Floating Orbs with Glow Effects */}
-      <div className="absolute top-1/4 left-1/4 w-96 h-96">
-        <div className="absolute inset-0 bg-gradient-to-r from-indigo-500/20 to-purple-500/20 rounded-full blur-3xl animate-float-orb"></div>
-        <div className="absolute inset-10 bg-gradient-to-r from-indigo-400/30 to-purple-400/30 rounded-full blur-2xl animate-pulse-orb"></div>
+      {/* Floating Golden Orbs */}
+      <div className="floating-orb absolute top-1/4 left-1/5 w-72 h-72 transition-transform duration-700 ease-out">
+        <div className="absolute inset-0 bg-gradient-to-br from-amber-100/40 to-orange-100/20 rounded-full blur-3xl animate-premium-float" />
       </div>
 
-      <div className="absolute bottom-1/4 right-1/4 w-80 h-80">
-        <div className="absolute inset-0 bg-gradient-to-r from-purple-600/20 to-pink-600/20 rounded-full blur-3xl animate-float-orb-delayed"></div>
-        <div className="absolute inset-10 bg-gradient-to-r from-purple-400/30 to-pink-400/30 rounded-full blur-2xl animate-pulse-orb-delayed"></div>
+      <div className="floating-orb absolute bottom-1/3 right-1/4 w-96 h-96 transition-transform duration-700 ease-out">
+        <div className="absolute inset-0 bg-gradient-to-br from-stone-100/50 to-amber-50/30 rounded-full blur-3xl animate-premium-float" style={{ animationDelay: '2s' }} />
       </div>
 
-      {/* Animated Geometric Shapes */}
-      <div className="absolute top-20 left-10 w-24 h-24 border-2 border-white/10 rounded-3xl animate-rotate-slow"></div>
-      <div className="absolute bottom-20 right-10 w-32 h-32 border-2 border-white/10 rounded-full animate-rotate-reverse-slow"></div>
-      <div className="absolute top-1/2 left-10 w-16 h-16 border border-white/5 rounded-lg animate-spin-slow"></div>
+      <div className="floating-orb absolute top-1/3 right-1/5 w-48 h-48 transition-transform duration-700 ease-out">
+        <div className="absolute inset-0 bg-gradient-to-br from-yellow-50/60 to-cream-100/40 rounded-full blur-2xl animate-premium-float" style={{ animationDelay: '4s' }} />
+      </div>
 
-      {/* Premium Light Beams */}
-      <div className="absolute top-0 left-1/2 w-1 h-1/3 bg-gradient-to-b from-white/0 via-white/20 to-white/0 animate-beam"></div>
-      <div className="absolute top-0 right-1/3 w-1 h-1/4 bg-gradient-to-b from-white/0 via-white/15 to-white/0 animate-beam-delayed"></div>
+      {/* Decorative Elements */}
+      <div className="absolute top-20 left-10 w-px h-32 bg-gradient-to-b from-transparent via-stone-300 to-transparent opacity-50" />
+      <div className="absolute top-40 right-16 w-px h-24 bg-gradient-to-b from-transparent via-amber-200 to-transparent opacity-40" />
+      <div className="absolute bottom-32 left-20 w-16 h-px bg-gradient-to-r from-transparent via-stone-300 to-transparent opacity-50" />
 
-      {/* Micro Particle System */}
-      <div className="absolute inset-0 overflow-hidden">
-        {[...Array(30)].map((_, i) => (
+      {/* Floating Particles */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        {[...Array(12)].map((_, i) => (
           <div
             key={i}
-            className="absolute w-1 h-1 bg-white/20 rounded-full animate-particle"
+            className="absolute w-1.5 h-1.5 bg-gradient-to-br from-amber-300/60 to-amber-400/40 rounded-full animate-particle"
             style={{
-              left: `${Math.random() * 100}%`,
-              top: `${Math.random() * 100}%`,
-              animationDelay: `${Math.random() * 5}s`,
-              animationDuration: `${3 + Math.random() * 4}s`
+              left: `${10 + Math.random() * 80}%`,
+              top: `${20 + Math.random() * 60}%`,
+              animationDelay: `${Math.random() * 8}s`,
+              animationDuration: `${6 + Math.random() * 4}s`
             }}
-          ></div>
+          />
         ))}
       </div>
 
-      {/* Main Content - Premium Glass Morphism */}
-      <div className="relative z-20 w-full max-w-6xl mx-auto px-4">
-        <div className="backdrop-blur-xl bg-gradient-to-br from-white/5 to-white/10 p-8 sm:p-12 md:p-16 rounded-3xl border border-white/20 shadow-2xl relative overflow-hidden group animate-fade-in-up">
-          
-          {/* Inner Glow Effect */}
-          <div className="absolute inset-0 bg-gradient-to-r from-indigo-500/5 via-purple-500/5 to-pink-500/5 rounded-3xl group-hover:opacity-100 opacity-0 transition-opacity duration-700"></div>
-          
-          {/* Border Animation */}
-          <div className="absolute inset-0 rounded-3xl p-[2px]">
-            <div className="absolute inset-0 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 rounded-3xl opacity-0 group-hover:opacity-30 transition-opacity duration-700 animate-border-rotate"></div>
+      {/* Main Content */}
+      <div className="relative z-20 w-full max-w-5xl mx-auto px-4">
+        <div className="text-center">
+          {/* Tagline */}
+          <div className="animate-elegant-fade-up mb-6">
+            <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/60 backdrop-blur-sm border border-stone-200/50 text-sm font-medium text-stone-600 tracking-wide">
+              <span className="w-2 h-2 bg-gradient-to-br from-amber-400 to-amber-600 rounded-full animate-pulse" />
+              Nepal's Premier Lost & Found Platform
+            </span>
           </div>
 
-          <div className="relative z-10">
-            {/* Premium Typography with Gradient Text */}
-            <div className="mb-8">
-              <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-6 leading-tight">
-                <span className="bg-clip-text text-transparent bg-gradient-to-r from-white via-white/90 to-white/80 animate-text-glow">
-                  Lost Something?
-                </span>
-                <br />
-                <span className="bg-clip-text text-transparent bg-gradient-to-r from-indigo-300 via-purple-300 to-pink-300 animate-text-glow-delayed">
-                  Found Something?
-                </span>
-              </h1>
-              <p className="text-lg sm:text-xl md:text-2xl text-white/80 max-w-2xl mx-auto font-light leading-relaxed animate-fade-in-delayed">
-                Reuniting people with their belongings through our premium reconnection service.
-                Fast, secure, and elegantly simple.
-              </p>
-            </div>
+          {/* Main Heading */}
+          <h1 className="animate-elegant-fade-up-delay-1 font-display text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-semibold text-stone-900 mb-6 leading-[1.1] tracking-tight">
+            <span className="block">Lost Something</span>
+            <span className="block mt-2 relative inline-block">
+              <span className="bg-gradient-to-r from-amber-600 via-amber-500 to-yellow-600 bg-clip-text text-transparent">
+                Precious?
+              </span>
+              <svg className="absolute -bottom-2 left-0 w-full" height="8" viewBox="0 0 200 8" fill="none">
+                <path d="M0 4C50 0 100 8 200 4" stroke="url(#gold-gradient)" strokeWidth="2" strokeLinecap="round" />
+                <defs>
+                  <linearGradient id="gold-gradient" x1="0" y1="0" x2="200" y2="0">
+                    <stop offset="0%" stopColor="#D4A373" />
+                    <stop offset="100%" stopColor="#B8860B" />
+                  </linearGradient>
+                </defs>
+              </svg>
+            </span>
+          </h1>
 
-            {/* Premium Stats Counter */}
-            <div className="flex justify-center gap-8 sm:gap-12 mb-10 animate-slide-up">
-              <div className="text-center">
-                <div className="text-3xl sm:text-4xl font-bold text-white mb-2 animate-count" data-count="95">95%</div>
-                <div className="text-sm sm:text-base text-white/60 font-medium">Success Rate</div>
-              </div>
-              <div className="text-center">
-                <div className="text-3xl sm:text-4xl font-bold text-white mb-2 animate-count" data-count="24">24h</div>
-                <div className="text-sm sm:text-base text-white/60 font-medium">Average Recovery</div>
-              </div>
-              <div className="text-center">
-                <div className="text-3xl sm:text-4xl font-bold text-white mb-2 animate-count" data-count="10k">10K+</div>
-                <div className="text-sm sm:text-base text-white/60 font-medium">Items Recovered</div>
-              </div>
-            </div>
+          {/* Subheading */}
+          <p className="animate-elegant-fade-up-delay-2 text-lg sm:text-xl md:text-2xl text-stone-600 max-w-2xl mx-auto font-light leading-relaxed mb-10">
+            Reuniting people with their belongings through our
+            <span className="font-medium text-stone-800"> elegant reconnection service</span>.
+            Fast, secure, and beautifully simple.
+          </p>
 
-            {/* Premium Action Buttons with Hover Effects */}
-            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center animate-fade-in-up-delayed">
-              <a
-                href="/Search"
-                className="group relative overflow-hidden px-8 py-4 rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 font-semibold text-white shadow-2xl hover:shadow-3xl transition-all duration-300 transform hover:-translate-y-1 w-full sm:w-auto text-center min-w-[200px]"
-              >
-                <span className="relative z-10 flex items-center justify-center gap-2">
-                  Post Lost Item
-                  <svg className="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
-                  </svg>
-                </span>
-                <div className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/20 to-white/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000"></div>
-              </a>
-              
-              <a
-                href="/ItemFound"
-                className="group relative overflow-hidden px-8 py-4 rounded-xl bg-white/5 backdrop-blur-sm border border-white/20 hover:bg-white/10 font-semibold text-white shadow-2xl hover:shadow-3xl transition-all duration-300 transform hover:-translate-y-1 w-full sm:w-auto text-center min-w-[200px]"
-              >
-                <span className="relative z-10 flex items-center justify-center gap-2">
-                  Post Found Item
-                  <svg className="w-5 h-5 group-hover:rotate-90 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path>
-                  </svg>
-                </span>
-                <div className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/10 to-white/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000"></div>
-              </a>
-            </div>
+          {/* CTA Buttons */}
+          <div className="animate-elegant-fade-up-delay-4 flex flex-col sm:flex-row gap-4 justify-center items-center">
+            <a
+              href="/Search"
+              className="group relative overflow-hidden px-8 py-4 rounded-md bg-stone-900 hover:bg-stone-800 text-white font-medium tracking-wide shadow-xl hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-1 w-full sm:w-auto text-center min-w-[200px]"
+            >
+              <span className="relative z-10 flex items-center justify-center gap-3">
+                Report Lost Item
+                <svg className="w-5 h-5 group-hover:translate-x-1 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                </svg>
+              </span>
+              <div className="absolute inset-0 bg-gradient-to-r from-amber-600/0 via-amber-600/20 to-amber-600/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700" />
+            </a>
 
-            {/* Trust Indicators */}
-            <div className="mt-10 text-center">
-              <p className="text-sm text-white/50 font-light animate-fade-in">
-                Trusted by thousands • End-to-end encryption • 24/7 Support
-              </p>
-            </div>
+            <a
+              href="/ItemFound"
+              className="group relative overflow-hidden px-8 py-4 rounded-md bg-white/80 backdrop-blur-sm border border-stone-300 hover:border-stone-400 hover:bg-white text-stone-800 font-medium tracking-wide shadow-lg hover:shadow-xl transition-all duration-500 transform hover:-translate-y-1 w-full sm:w-auto text-center min-w-[200px]"
+            >
+              <span className="relative z-10 flex items-center justify-center gap-3">
+                Post Found Item
+                <svg className="w-5 h-5 group-hover:rotate-12 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M12 4v16m8-8H4" />
+                </svg>
+              </span>
+            </a>
           </div>
-        </div>
-      </div>
 
-      {/* Premium Scroll Indicator */}
-      <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce-slow hidden sm:block">
-        <div className="relative">
-          <div className="w-6 h-10 border-2 border-white/30 rounded-full flex justify-center">
-            <div className="w-1 h-2 bg-white/60 rounded-full mt-2 animate-scroll"></div>
-          </div>
-          <div className="absolute -bottom-8 left-1/2 transform -translate-x-1/2 text-xs text-white/50 font-light tracking-widest">
-            EXPLORE
+          {/* Trust Indicators */}
+          <div className="mt-16 animate-elegant-fade-up-delay-4">
+            <div className="flex items-center justify-center gap-6 text-sm text-stone-400">
+              <span className="flex items-center gap-2">
+                <svg className="w-4 h-4 text-green-500" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                </svg>
+                Trusted by thousands
+              </span>
+              <span className="w-1 h-1 bg-stone-300 rounded-full" />
+              <span className="flex items-center gap-2">
+                <svg className="w-4 h-4 text-amber-500" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clipRule="evenodd" />
+                </svg>
+                Secure & Private
+              </span>
+              <span className="w-1 h-1 bg-stone-300 rounded-full hidden sm:block" />
+              <span className="hidden sm:flex items-center gap-2">
+                <svg className="w-4 h-4 text-blue-500" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
+                </svg>
+                24/7 Support
+              </span>
+            </div>
           </div>
         </div>
       </div>
 
-      {/* Add these styles to your global CSS or style tag */}
-      <style jsx>{`
-        @keyframes gridMove {
-          0% { transform: translateY(0) translateX(0); }
-          100% { transform: translateY(50px) translateX(50px); }
-        }
-        
-        @keyframes float-orb {
-          0%, 100% { transform: translate(0, 0) scale(1); }
-          50% { transform: translate(30px, -30px) scale(1.1); }
-        }
-        
-        @keyframes pulse-orb {
-          0%, 100% { opacity: 0.3; }
-          50% { opacity: 0.5; }
-        }
-        
-        @keyframes beam {
-          0% { transform: translateY(-100%) rotate(45deg); opacity: 0; }
-          50% { opacity: 0.3; }
-          100% { transform: translateY(100vh) rotate(45deg); opacity: 0; }
-        }
-        
-        @keyframes particle {
-          0% { transform: translateY(0) translateX(0) scale(1); opacity: 0; }
-          10% { opacity: 1; }
-          90% { opacity: 1; }
-          100% { transform: translateY(-100px) translateX(20px) scale(0); opacity: 0; }
-        }
-        
-        @keyframes border-rotate {
-          0% { transform: rotate(0deg); }
-          100% { transform: rotate(360deg); }
-        }
-        
-        @keyframes text-glow {
-          0%, 100% { filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.3)); }
-          50% { filter: drop-shadow(0 0 20px rgba(255, 255, 255, 0.5)); }
-        }
-        
-        @keyframes scroll {
-          0% { transform: translateY(0); opacity: 1; }
-          100% { transform: translateY(10px); opacity: 0; }
-        }
-        
-        .animate-grid-move {
-          animation: gridMove 20s linear infinite;
-        }
-        
-        .animate-float-orb {
-          animation: float-orb 15s ease-in-out infinite;
-        }
-        
-        .animate-float-orb-delayed {
-          animation: float-orb 18s ease-in-out infinite 1s;
-        }
-        
-        .animate-pulse-orb {
-          animation: pulse-orb 4s ease-in-out infinite;
-        }
-        
-        .animate-pulse-orb-delayed {
-          animation: pulse-orb 5s ease-in-out infinite 0.5s;
-        }
-        
-        .animate-beam {
-          animation: beam 3s ease-in-out infinite;
-        }
-        
-        .animate-beam-delayed {
-          animation: beam 3s ease-in-out infinite 1.5s;
-        }
-        
-        .animate-particle {
-          animation: particle linear infinite;
-        }
-        
-        .animate-border-rotate {
-          animation: border-rotate 20s linear infinite;
-        }
-        
-        .animate-text-glow {
-          animation: text-glow 3s ease-in-out infinite;
-        }
-        
-        .animate-text-glow-delayed {
-          animation: text-glow 3s ease-in-out infinite 1.5s;
-        }
-        
-        .animate-scroll {
-          animation: scroll 1.5s ease-in-out infinite;
-        }
-        
-        .animate-count {
-          transition: all 1s ease-out;
-        }
-        
-        .animate-count[data-count]::after {
-          content: attr(data-count);
-        }
-      `}</style>
+
     </section>
   );
 };

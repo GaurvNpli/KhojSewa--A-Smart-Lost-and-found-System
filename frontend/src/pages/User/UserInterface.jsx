@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import Navbar from "../../components/Navbar";
 
 const UserInterface = () => {
@@ -42,9 +42,9 @@ const UserInterface = () => {
           setUser(userInfo);
           setAvatarPreview(
             userInfo.avatar ||
-              `https://api.dicebear.com/7.x/adventurer-neutral/svg?seed=${encodeURIComponent(
-                userInfo.email || userInfo._id || "random"
-              )}`
+            `https://api.dicebear.com/7.x/adventurer-neutral/svg?seed=${encodeURIComponent(
+              userInfo.email || userInfo._id || "random"
+            )}`
           );
         } else {
           throw new Error(profileData.message || "Failed to fetch user");
@@ -86,14 +86,12 @@ const UserInterface = () => {
     const file = e.target.files[0];
     if (!file) return;
 
-    // Validate file type
     const validTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
     if (!validTypes.includes(file.type)) {
       alert('Please upload a valid image file (JPEG, PNG, GIF, or WebP)');
       return;
     }
 
-    // Validate file size (max 5MB)
     if (file.size > 5 * 1024 * 1024) {
       alert('File size must be less than 5MB');
       return;
@@ -109,8 +107,6 @@ const UserInterface = () => {
       const formData = new FormData();
       formData.append("avatar", file);
 
-      console.log('Uploading avatar:', file.name, file.type, file.size);
-
       const token = localStorage.getItem("accessToken");
       const res = await fetch("http://localhost:8000/api/v1/users/upload-avatar", {
         method: "POST",
@@ -118,34 +114,27 @@ const UserInterface = () => {
         body: formData,
       });
 
-      console.log('Upload response status:', res.status);
       const data = await res.json();
-      console.log('Upload response data:', data);
 
       if (res.ok) {
         const newAvatarUrl = data.data.avatar;
-        
-        // Update state
+
         setUser((prev) => ({ ...prev, avatar: newAvatarUrl }));
         setAvatarPreview(newAvatarUrl);
-        
-        // Update localStorage so navbar and other components get the new avatar
+
         const storedUser = JSON.parse(localStorage.getItem('user') || '{}');
         storedUser.avatar = newAvatarUrl;
         localStorage.setItem('user', JSON.stringify(storedUser));
-        
-        // Dispatch custom event to notify Navbar and other components
+
         window.dispatchEvent(new Event('userUpdated'));
-        
+
         alert('Avatar updated successfully!');
         setIsUploadingAvatar(false);
       } else {
-        console.error('Upload failed:', data);
         alert(data.message || "Failed to upload avatar.");
         setIsUploadingAvatar(false);
       }
     } catch (err) {
-      console.error('Avatar upload error:', err);
       alert("Error uploading avatar: " + err.message);
       setIsUploadingAvatar(false);
     }
@@ -177,7 +166,6 @@ const UserInterface = () => {
         alert(data.message || "Update failed.");
       }
     } catch (err) {
-      console.error(err);
       alert("Error updating profile.");
     }
   };
@@ -208,7 +196,6 @@ const UserInterface = () => {
         alert(data.message || "Password change failed.");
       }
     } catch (err) {
-      console.error(err);
       alert("Error changing password.");
     }
   };
@@ -234,7 +221,6 @@ const UserInterface = () => {
         alert(data.message || "Failed to delete account.");
       }
     } catch (err) {
-      console.error(err);
       alert("Error deleting account.");
     } finally {
       setShowDeleteConfirm(false);
@@ -248,9 +234,10 @@ const UserInterface = () => {
   /* ------------------------- Loading ------------------------- */
   if (!user) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-purple-100 to-indigo-100">
-        <div className="text-gray-700 font-medium">
-          Loading your account...
+      <div className="flex items-center justify-center min-h-screen" style={{ background: 'linear-gradient(180deg, #FFFDF8 0%, #FFF9ED 100%)' }}>
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-amber-500 mx-auto mb-4"></div>
+          <p className="text-stone-600 font-medium">Loading your account...</p>
         </div>
       </div>
     );
@@ -260,217 +247,227 @@ const UserInterface = () => {
   return (
     <>
       <Navbar />
+
       {/* Delete Confirmation Modal */}
       {showDeleteConfirm && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-6 max-w-md mx-4 shadow-xl">
-            <div className="flex items-center mb-4">
-              <div className="flex-shrink-0">
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
+          <div className="bg-white rounded-2xl p-8 max-w-md mx-4 shadow-2xl border border-stone-100">
+            <div className="flex items-center mb-6">
+              <div className="flex-shrink-0 w-12 h-12 rounded-full bg-red-100 flex items-center justify-center">
                 <svg className="h-6 w-6 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z" />
                 </svg>
               </div>
-              <div className="ml-3">
-                <h3 className="text-lg font-medium text-gray-900">Delete Account</h3>
+              <div className="ml-4">
+                <h3 className="text-xl font-display font-semibold text-stone-900">Delete Account</h3>
               </div>
             </div>
-            <div className="mb-6">
-              <p className="text-sm text-gray-500">
-                Are you sure you want to delete your account? This action cannot be undone and all your data will be permanently removed.
-              </p>
-            </div>
-            <div className="flex justify-end space-x-3">
+            <p className="text-stone-600 mb-8">
+              Are you sure you want to delete your account? This action cannot be undone and all your data will be permanently removed.
+            </p>
+            <div className="flex justify-end gap-3">
               <button
                 onClick={cancelDeleteAccount}
-                className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 border border-gray-300 rounded-md hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-500"
+                className="px-5 py-2.5 text-sm font-medium text-stone-700 bg-stone-100 rounded-lg hover:bg-stone-200 transition-colors"
               >
-                No, Cancel
+                Cancel
               </button>
               <button
                 onClick={confirmDeleteAccount}
-                className="px-4 py-2 text-sm font-medium text-white bg-red-600 border border-transparent rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500"
+                className="px-5 py-2.5 text-sm font-medium text-white bg-red-600 rounded-lg hover:bg-red-700 transition-colors"
               >
-                Yes, Delete Account
+                Delete Account
               </button>
             </div>
           </div>
         </div>
       )}
 
-      <div className="min-h-screen bg-gradient-to-br from-purple-100 to-indigo-100 pt-24 p-6">
-      <div className="max-w-4xl mx-auto bg-white rounded-2xl shadow-xl p-8">
-        {/* Avatar + Info */}
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between border-b pb-6 mb-6">
-          <div className="flex items-center space-x-6">
-            <div className="relative">
-              <img
-                src={avatarPreview}
-                alt="User Avatar"
-                className="h-24 w-24 rounded-full object-cover border-4 border-indigo-500 cursor-pointer hover:opacity-90 transition"
-                onClick={handleAvatarClick}
-              />
-              <input
-                ref={fileInputRef}
-                type="file"
-                accept="image/*"
-                onChange={handleAvatarChange}
-                className="hidden"
-                disabled={isUploadingAvatar}
-              />
-              {isUploadingAvatar && (
-                <div className="absolute inset-0 bg-black bg-opacity-50 rounded-full flex items-center justify-center">
-                  <div className="text-center">
-                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-white mx-auto mb-1"></div>
-                    <span className="text-white text-xs font-medium">Uploading...</span>
-                  </div>
+      <div className="min-h-screen pt-24 pb-12 px-4" style={{ background: 'linear-gradient(180deg, #FFFDF8 0%, #FFF9ED 100%)' }}>
+        <div className="max-w-4xl mx-auto">
+          {/* Back Link */}
+          <Link to="/user/dashboard" className="inline-flex items-center gap-2 text-amber-600 hover:text-amber-700 font-medium mb-6 transition-colors">
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+            </svg>
+            Back to Dashboard
+          </Link>
+
+          <div className="bg-white rounded-2xl shadow-xl border border-stone-100 overflow-hidden">
+            {/* Header Section */}
+            <div className="p-8 border-b border-stone-100 bg-gradient-to-r from-stone-50 to-amber-50">
+              <div className="flex flex-col sm:flex-row sm:items-center gap-6">
+                <div className="relative">
+                  <img
+                    src={avatarPreview}
+                    alt="User Avatar"
+                    className="h-28 w-28 rounded-full object-cover border-4 border-white shadow-lg cursor-pointer hover:opacity-90 transition"
+                    onClick={handleAvatarClick}
+                  />
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept="image/*"
+                    onChange={handleAvatarChange}
+                    className="hidden"
+                    disabled={isUploadingAvatar}
+                  />
+                  {isUploadingAvatar && (
+                    <div className="absolute inset-0 bg-black/50 rounded-full flex items-center justify-center">
+                      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-white"></div>
+                    </div>
+                  )}
+                  {!isUploadingAvatar && (
+                    <button
+                      onClick={handleAvatarClick}
+                      className="absolute bottom-0 right-0 bg-stone-900 text-white text-xs px-3 py-1.5 rounded-full hover:bg-stone-800 transition shadow-lg"
+                    >
+                      Edit
+                    </button>
+                  )}
                 </div>
-              )}
-              {!isUploadingAvatar && (
-                <div
-                  className="absolute bottom-0 right-0 bg-indigo-600 text-white text-xs px-2 py-1 rounded-full cursor-pointer hover:bg-indigo-700 transition"
-                  onClick={handleAvatarClick}
-                >
-                  Change
+                <div>
+                  <h1 className="text-2xl font-display font-semibold text-stone-900 mb-1">
+                    {user.fullName || "User"}
+                  </h1>
+                  <p className="text-stone-500 mb-4">
+                    {user.email || "No email set"}
+                  </p>
+                  <button
+                    onClick={() => navigate("/user/dashboard")}
+                    className="inline-flex items-center gap-2 bg-stone-900 hover:bg-stone-800 text-white px-5 py-2.5 rounded-lg font-medium transition-all duration-300 shadow-lg hover:shadow-xl"
+                  >
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
+                    </svg>
+                    Go to Dashboard
+                  </button>
                 </div>
-              )}
+              </div>
             </div>
-            <div>
-              <h1 className="text-2xl font-bold text-gray-800">
-                {user.fullName || "User"}
-              </h1>
-              <p className="text-sm text-gray-600">
-                {user.email || "No email set"}
+
+            {/* Account Details Section */}
+            <div className="p-8">
+              <h2 className="text-lg font-display font-semibold text-stone-900 mb-6 flex items-center gap-2">
+                <svg className="w-5 h-5 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                </svg>
+                Account Details
+              </h2>
+              <div className="grid gap-6 md:grid-cols-2">
+                <div>
+                  <label className="block text-sm font-medium text-stone-700 mb-2">Full Name</label>
+                  <input
+                    type="text"
+                    name="fullName"
+                    value={user.fullName || ""}
+                    onChange={handleChange}
+                    className="w-full px-4 py-3 border border-stone-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-200 focus:border-amber-400 transition-all"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-stone-700 mb-2">Phone Number</label>
+                  <input
+                    type="text"
+                    name="phoneNumber"
+                    value={user.phoneNumber || ""}
+                    onChange={handleChange}
+                    className="w-full px-4 py-3 border border-stone-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-200 focus:border-amber-400 transition-all"
+                  />
+                </div>
+              </div>
+              <div className="mt-6">
+                <label className="block text-sm font-medium text-stone-700 mb-2">Bio</label>
+                <textarea
+                  name="bio"
+                  value={user.bio || ""}
+                  onChange={handleChange}
+                  placeholder="Tell us about yourself..."
+                  rows={3}
+                  className="w-full px-4 py-3 border border-stone-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-200 focus:border-amber-400 transition-all resize-none"
+                />
+              </div>
+              <div className="mt-6">
+                <button
+                  onClick={handleUpdateProfile}
+                  className="bg-stone-900 hover:bg-stone-800 text-white px-6 py-3 rounded-xl font-medium transition-all duration-300 shadow-lg hover:shadow-xl"
+                >
+                  Save Changes
+                </button>
+              </div>
+            </div>
+
+            {/* Password Section */}
+            <div className="p-8 border-t border-stone-100">
+              <h2 className="text-lg font-display font-semibold text-stone-900 mb-6 flex items-center gap-2">
+                <svg className="w-5 h-5 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                </svg>
+                Change Password
+              </h2>
+              <div className="grid gap-6 md:grid-cols-2">
+                <div className="md:col-span-2">
+                  <label className="block text-sm font-medium text-stone-700 mb-2">Current Password</label>
+                  <input
+                    type="password"
+                    value={currentPassword}
+                    onChange={(e) => setCurrentPassword(e.target.value)}
+                    placeholder="Enter your current password"
+                    className="w-full px-4 py-3 border border-stone-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-200 focus:border-amber-400 transition-all"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-stone-700 mb-2">New Password</label>
+                  <input
+                    type="password"
+                    value={newPassword}
+                    onChange={(e) => setNewPassword(e.target.value)}
+                    placeholder="Enter new password"
+                    className="w-full px-4 py-3 border border-stone-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-200 focus:border-amber-400 transition-all"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-stone-700 mb-2">Confirm New Password</label>
+                  <input
+                    type="password"
+                    value={confirmPassword}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
+                    placeholder="Re-enter new password"
+                    className="w-full px-4 py-3 border border-stone-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-200 focus:border-amber-400 transition-all"
+                  />
+                </div>
+              </div>
+              <div className="mt-6">
+                <button
+                  onClick={handleChangePassword}
+                  className="bg-stone-900 hover:bg-stone-800 text-white px-6 py-3 rounded-xl font-medium transition-all duration-300 shadow-lg hover:shadow-xl"
+                >
+                  Change Password
+                </button>
+              </div>
+            </div>
+
+            {/* Danger Zone */}
+            <div className="p-8 border-t border-stone-100 bg-red-50/50">
+              <h2 className="text-lg font-display font-semibold text-red-700 mb-4 flex items-center gap-2">
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z" />
+                </svg>
+                Danger Zone
+              </h2>
+              <p className="text-stone-600 mb-6">
+                Once you delete your account, there is no going back. Please be certain.
               </p>
               <button
-                onClick={() => navigate("/user/dashboard")}
-                className="mt-3 bg-indigo-500 text-white px-4 py-2 rounded-lg hover:bg-indigo-600 transition"
+                onClick={handleDeleteAccount}
+                className="bg-red-600 hover:bg-red-700 text-white px-6 py-3 rounded-xl font-medium transition-all duration-300"
               >
-                Go to Dashboard
+                Delete Account
               </button>
             </div>
           </div>
         </div>
-
-        {/* Profile Form */}
-        <h2 className="text-xl font-semibold mb-4 text-indigo-700">
-          Account Details
-        </h2>
-        <div className="grid gap-4 md:grid-cols-2">
-          <div>
-            <label className="block text-sm font-medium text-gray-700">
-              Full Name
-            </label>
-            <input
-              type="text"
-              name="fullName"
-              value={user.fullName || ""}
-              onChange={handleChange}
-              className="mt-1 w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-400"
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700">
-              Phone Number
-            </label>
-            <input
-              type="text"
-              name="phoneNumber"
-              value={user.phoneNumber || ""}
-              onChange={handleChange}
-              className="mt-1 w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-400"
-            />
-          </div>
-        </div>
-        <div className="mt-4">
-          <label className="block text-sm font-medium text-gray-700">
-            Bio
-          </label>
-          <textarea
-            name="bio"
-            value={user.bio || ""}
-            onChange={handleChange}
-            placeholder="Tell us about yourself..."
-            rows={3}
-            className="mt-1 w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-400"
-          />
-        </div>
-        <div className="mt-6">
-          <button
-            onClick={handleUpdateProfile}
-            className="bg-purple-600 text-white px-6 py-2 rounded-lg hover:bg-purple-700 transition"
-          >
-            Save Changes
-          </button>
-        </div>
-
-        {/* Password Section */}
-        <h2 className="text-xl font-semibold mt-8 mb-4 text-indigo-700">
-          Change Password
-        </h2>
-        <div className="grid gap-4 md:grid-cols-2">
-          <div className="md:col-span-2">
-            <label className="block text-sm font-medium text-gray-700">
-              Current Password
-            </label>
-            <input
-              type="password"
-              value={currentPassword}
-              onChange={(e) => setCurrentPassword(e.target.value)}
-              placeholder="Enter your current password"
-              className="mt-1 w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-400"
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700">
-              New Password
-            </label>
-            <input
-              type="password"
-              value={newPassword}
-              onChange={(e) => setNewPassword(e.target.value)}
-              placeholder="Enter new password"
-              className="mt-1 w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-400"
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700">
-              Confirm New Password
-            </label>
-            <input
-              type="password"
-              value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
-              placeholder="Re-enter new password"
-              className="mt-1 w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-400"
-            />
-          </div>
-        </div>
-        <div className="mt-6 flex items-center gap-4">
-          <button
-            onClick={handleChangePassword}
-            className="bg-purple-600 text-white px-6 py-2 rounded-lg hover:bg-purple-700 transition"
-          >
-            Change Password
-          </button>
-        </div>
-
-        {/* Account Deletion Section */}
-        <div className="mt-8 pt-6 border-t border-gray-200">
-          <h2 className="text-xl font-semibold mb-4 text-red-700">
-            Danger Zone
-          </h2>
-          <p className="text-gray-600 mb-4">
-            Once you delete your account, there is no going back. Please be certain.
-          </p>
-          <button
-            onClick={handleDeleteAccount}
-            className="bg-red-600 text-white px-6 py-2 rounded-lg hover:bg-red-700 transition"
-          >
-            Delete Account
-          </button>
-        </div>
       </div>
-    </div>
     </>
   );
 };
