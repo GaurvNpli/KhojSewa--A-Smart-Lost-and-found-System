@@ -139,76 +139,7 @@ export default function AboutUs() {
           </div>
 
           <div className="grid md:grid-cols-2 gap-8">
-            {/* Step 1 */}
-            <div className="card-premium group">
-              <div className="flex items-start gap-4">
-                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-amber-100 to-amber-50 flex items-center justify-center text-amber-600 font-display font-semibold text-xl flex-shrink-0 group-hover:scale-110 transition-transform">
-                  1
-                </div>
-                <div>
-                  <h3 className="text-xl font-display font-semibold text-stone-900 mb-2 group-hover:text-amber-700 transition-colors">
-                    Report a Lost Item
-                  </h3>
-                  <p className="text-stone-600 leading-relaxed">
-                    Head over to the "Report Lost Item" page and fill out a form with the item details, including name, location, image, and description.
-                  </p>
-                </div>
-              </div>
-            </div>
 
-            {/* Step 2 */}
-            <div className="card-premium group">
-              <div className="flex items-start gap-4">
-                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-amber-100 to-amber-50 flex items-center justify-center text-amber-600 font-display font-semibold text-xl flex-shrink-0 group-hover:scale-110 transition-transform">
-                  2
-                </div>
-                <div>
-                  <h3 className="text-xl font-display font-semibold text-stone-900 mb-2 group-hover:text-amber-700 transition-colors">
-                    Browse Found Posts
-                  </h3>
-                  <p className="text-stone-600 leading-relaxed">
-                    Visit the homepage or search section to browse through recently found items. Use filters like item name or location to narrow your search.
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            {/* Step 3 */}
-            <div className="card-premium group">
-              <div className="flex items-start gap-4">
-                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-amber-100 to-amber-50 flex items-center justify-center text-amber-600 font-display font-semibold text-xl flex-shrink-0 group-hover:scale-110 transition-transform">
-                  3
-                </div>
-                <div>
-                  <h3 className="text-xl font-display font-semibold text-stone-900 mb-2 group-hover:text-amber-700 transition-colors">
-                    Contact the Poster
-                  </h3>
-                  <p className="text-stone-600 leading-relaxed">
-                    If you see your item posted by someone else, use the "Contact" button on the post card to reach out and verify ownership.
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            {/* Step 4 */}
-            <div className="card-premium group">
-              <div className="flex items-start gap-4">
-                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-amber-100 to-amber-50 flex items-center justify-center text-amber-600 font-display font-semibold text-xl flex-shrink-0 group-hover:scale-110 transition-transform">
-                  4
-                </div>
-                <div>
-                  <h3 className="text-xl font-display font-semibold text-stone-900 mb-2 group-hover:text-amber-700 transition-colors">
-                    Share & Spread the Word
-                  </h3>
-                  <p className="text-stone-600 leading-relaxed">
-                    Help reunite items faster by sharing posts through your social media or with friends. Every bit of visibility helps!
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
 
       {/* CTA Section */}
       <section
